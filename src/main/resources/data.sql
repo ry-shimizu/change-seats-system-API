@@ -1,0 +1,1 @@
+INSERT INTO SITE_USERS(id, login_id, user_name, authority, password, created_by, created_dt, updated_by, updated_dt) VALUES(NEXT VALUE FOR "SITE_USER_SEQ", 'ry-shimizu', 'shimizu', 1, 'password', 0, now(), 0, now());

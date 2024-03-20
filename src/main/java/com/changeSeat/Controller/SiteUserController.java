@@ -1,7 +1,7 @@
 package com.changeSeat.Controller;
 
-import com.changeSeat.Request.UserRegisterRequest;
-import com.changeSeat.Service.UserService;
+import com.changeSeat.Request.SiteUserRegisterRequest;
+import com.changeSeat.Service.SiteUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -10,16 +10,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/user")
+import java.time.LocalDateTime;
+
+@RequestMapping("/site-user")
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class SiteUserController {
 
-    private final UserService userService;
+    private final SiteUserService siteUserService;
 
     @PostMapping("/register")
-    public ResponseEntity userRegister(@RequestBody @Validated UserRegisterRequest request) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity siteUserRegister(@RequestBody @Validated SiteUserRegisterRequest request) {
+        var now = LocalDateTime.now();
+        return siteUserService.siteUserRegister(request, now);
     }
 
 }

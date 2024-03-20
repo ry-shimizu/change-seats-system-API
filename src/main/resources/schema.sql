@@ -1,0 +1,19 @@
+-- User
+DROP ALL OBJECTS;
+
+CREATE SEQUENCE site_user_seq;
+
+CREATE TABLE IF NOT EXISTS SITE_USERS(
+    id INT NOT NULL PRIMARY KEY,
+	login_id VARCHAR(30) NOT NULL,
+	user_name VARCHAR(40) NOT NULL,
+	authority SMALLINT NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	created_by INT NOT NULL,
+	created_dt TIMESTAMP(0) NOT NULL,
+	updated_by INT NOT NULL,
+    updated_dt TIMESTAMP(0) NOT NULL
+	);
+
+
+
