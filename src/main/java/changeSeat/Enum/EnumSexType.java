@@ -1,17 +1,19 @@
-package com.changeSeat.Enum;
+package changeSeat.Enum;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.stream.Stream;
 
-public enum EnumAuthority {
-    ADMIN(1),
-    GENERAL(2);
+import static java.util.Objects.isNull;
 
-    private int value;
+public enum EnumSexType {
+    MAN(1),
+    WOMAN(2);
 
-    private EnumAuthority(int value) {
+    private final int value;
+
+    private EnumSexType(int value) {
         this.value = value;
     }
 
@@ -21,13 +23,13 @@ public enum EnumAuthority {
     }
 
     @JsonCreator
-    public static EnumAuthority create(Integer value) {
-        if (value == null) {
+    public EnumSexType create(Integer value) {
+        if (isNull(value)) {
             return null;
         }
         return Stream.of(values())
                 .filter(v -> value.equals(v.getValue()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

@@ -2,18 +2,79 @@
 DROP ALL OBJECTS;
 
 CREATE SEQUENCE site_user_seq;
+CREATE SEQUENCE class_seq;
+CREATE SEQUENCE seat_seq;
+CREATE SEQUENCE other_class_seq;
+CREATE SEQUENCE student_seq;
+
+CREATE TYPE AUTHORITY AS ENUM ('ADMIN', 'GENERAL');
+CREATE TYPE SEXTYPE AS ENUM ('MAN', 'WOMAN');
+CREATE TYPE FLAGTYPE AS ENUM ('FLAG_ON', 'FLAG_OFF');
+CREATE TYPE SEATSTARTPOINT AS ENUM ('RIGHT', 'LEFT');
+
 
 CREATE TABLE IF NOT EXISTS SITE_USERS(
     id INT NOT NULL PRIMARY KEY,
 	login_id VARCHAR(30) NOT NULL,
 	user_name VARCHAR(40) NOT NULL,
-	authority SMALLINT NOT NULL,
+	authority AUTHORITY NOT NULL,
 	password VARCHAR(255) NOT NULL,
+	delete_flg FLAGTYPE NOT NULL,
 	created_by INT NOT NULL,
 	created_dt TIMESTAMP(0) NOT NULL,
 	updated_by INT NOT NULL,
     updated_dt TIMESTAMP(0) NOT NULL
-	);
+);
 
+CREATE TABLE IF NOT EXISTS CLASSES(
+    id INT NOT NULL PRIMARY KEY,
+    class_name VARCHAR(5) NOT NULL,
+    title VARCHAR(15) NOT NULL,
+    class_year SMALLINT NOT NULL,
+    seat_start_point SEATSTARTPOINT NOT NULL,
+    site_user_id INT NOT NULL,
+	delete_flg FLAGTYPE NOT NULL,
+	created_by INT NOT NULL,
+	created_dt TIMESTAMP(0) NOT NULL,
+	updated_by INT NOT NULL,
+    updated_dt TIMESTAMP(0) NOT NULL,
+    FOREIGN KEY (site_user_id) REFERENCES SITE_USERS(id)
+);
 
+CREATE TABLE IF NOT EXISTS OTHER_CLASSES(
+    id INT NOT NULL PRIMARY KEY,
+    site_user_id INT NOT NULL,
+    class_id INT NOT NULL,
+	delete_flg FLAGTYPE NOT NULL,
+	created_by INT NOT NULL,
+	created_dt TIMESTAMP(0) NOT NULL,
+	updated_by INT NOT NULL,
+    updated_dt TIMESTAMP(0) NOT NULL,
+    FOREIGN KEY (site_user_id) REFERENCES SITE_USERS(id),
+    FOREIGN KEY (class_id) REFERENCES CLASSES(id)
+);
 
+CREATE TABLE IF NOT EXISTS SEATS(
+    id INT NOT NULL PRIMARY KEY,
+    seat_number SMALLINT NOT NULL,
+    class_id INT NOT NULL,
+	delete_flg FLAGTYPE NOT NULL,
+	created_by INT NOT NULL,
+	created_dt TIMESTAMP(0) NOT NULL,
+	updated_by INT NOT NULL,
+    updated_dt TIMESTAMP(0) NOT NULL,
+    FOREIGN KEY (class_id) REFERENCES CLASSES(id)
+);
+
+CREATE TABLE IF NOT EXISTS STUDENTS(
+    id INT NOT NULL PRIMARY KEY,
+    student_name VARCHAR(10) NOT NULL,
+    sex_type SEXTYPE NOT NULL,
+    seat_id INT NOT NULL,
+	delete_flg FLAGTYPE NOT NULL,
+	created_by INT NOT NULL,
+	created_dt TIMESTAMP(0) NOT NULL,
+	updated_by INT NOT NULL,
+    updated_dt TIMESTAMP(0) NOT NULL,
+    FOREIGN KEY (seat_id) REFERENCES SEATS(id)
+);
