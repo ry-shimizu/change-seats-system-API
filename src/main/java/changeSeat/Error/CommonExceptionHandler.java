@@ -2,6 +2,7 @@ package changeSeat.Error;
 
 import changeSeat.Error.ErrorObject.ResourceError;
 import changeSeat.Error.ErrorObject.ValidationError;
+import changeSeat.Error.Exception.FileOperateException;
 import changeSeat.Error.Exception.InvalidInputException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CommonExceptionHandler {
 
-    @ExceptionHandler({InvalidInputException.class, DuplicateKeyException.class})
+    @ExceptionHandler({InvalidInputException.class, DuplicateKeyException.class, FileOperateException.class})
     public ResponseEntity<ResourceError> ExtendRuntimeExceptionHandler(RuntimeException e) {
         log.warn(String.format(" エラーメッセージ：%s", e.getMessage()), e);
         return ResponseEntity.badRequest().body(new ResourceError(e.getMessage()));

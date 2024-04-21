@@ -9,7 +9,8 @@ import static java.util.Objects.isNull;
 
 public enum EnumSexType {
     MAN(1),
-    WOMAN(2);
+    WOMAN(2),
+    OTHER(3);
 
     private final int value;
 
@@ -29,6 +30,13 @@ public enum EnumSexType {
         }
         return Stream.of(values())
                 .filter(v -> value.equals(v.getValue()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public static EnumSexType getEnumSexType(int value) {
+        return Stream.of(values())
+                .filter(v -> value == v.getValue())
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }

@@ -17,6 +17,7 @@ public interface OtherClassMapper {
     @Select("""
             SELECT
               c.class_year,
+              c.class_name,
               c.title,
               c.updated_dt,
               COUNT(s.id) AS student_num
@@ -27,12 +28,14 @@ public interface OtherClassMapper {
             AND c.delete_flg = 'FLAG_OFF'
             INNER JOIN seats s
             ON c.id = s.class_id
-            AND c.delete_flg = 'FLAG_OFF'
+            AND s.delete_flg = 'FLAG_OFF'
+            AND s.empty_seat_flg = 'FLAG_OFF'
             WHERE
               oc.site_user_id = #{siteUserId}
               AND oc.delete_flg = 'FLAG_OFF'
             GROUP BY
               c.class_year,
+              c.class_name,
               c.title,
               c.updated_dt
             """)
@@ -53,7 +56,8 @@ public interface OtherClassMapper {
               AND c.delete_flg = 'FLAG_OFF'
               INNER JOIN seats s
               ON c.id = s.class_id
-              AND c.delete_flg = 'FLAG_OFF'
+              AND s.delete_flg = 'FLAG_OFF'
+              AND s.empty_seat_flg = 'FLAG_OFF'
               WHERE
                 oc.delete_flg = 'FLAG_OFF'
               <if test="classYear != null">
@@ -113,6 +117,7 @@ public interface OtherClassMapper {
               c.class_name,
               c.title,
               s.seat_number,
+              s.empty_seat_flg,
               stu.student_name,
               stu.sex_type
             FROM

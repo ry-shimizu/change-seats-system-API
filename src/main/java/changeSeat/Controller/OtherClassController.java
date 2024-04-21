@@ -2,6 +2,7 @@ package changeSeat.Controller;
 
 import changeSeat.Request.OtherClass.MyOtherClassListRequest;
 import changeSeat.Request.OtherClass.OtherClassDeleteRequest;
+import changeSeat.Request.OtherClass.OtherClassDetailRequest;
 import changeSeat.Request.OtherClass.OtherClassRegisterRequest;
 import changeSeat.Request.OtherClass.OtherClassSearchRequest;
 import changeSeat.Response.OtherClass.OtherClassDetailResponse;
@@ -10,8 +11,6 @@ import changeSeat.Service.OtherClassService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,21 +38,19 @@ public class OtherClassController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> registerOtherClass(@RequestBody @Validated OtherClassRegisterRequest request) {
-        var now = LocalDateTime.now();
-        otherClassService.registerOtherClass(request.getSiteUserId(), request.getClassId(), now);
+        otherClassService.registerOtherClass(request.getSiteUserId(), request.getClassId(), LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/delete")
     public ResponseEntity<Void> deleteOtherClass(@RequestBody @Validated OtherClassDeleteRequest request) {
-        var now = LocalDateTime.now();
-        otherClassService.deleteOtherClass(request.getOtherClassId(), now);
+        otherClassService.deleteOtherClass(request.getOtherClassId(), LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/detail/{classId}/{siteUserId}")
-    public OtherClassDetailResponse getOtherClassDetail(@PathVariable int classId, @PathVariable int siteUserId) {
-        return new OtherClassDetailResponse(otherClassService.getOtherClassDetail(classId, siteUserId));
+    @PostMapping("/detail")
+    public OtherClassDetailResponse getOtherClassDetail(@RequestBody @Validated OtherClassDetailRequest request) {
+        return new OtherClassDetailResponse(otherClassService.getOtherClassDetail(request.getClassId(), request.getSiteUserId()));
     }
 
 }

@@ -33,8 +33,7 @@ public class SiteUserController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> registerSiteUser(@RequestBody @Validated SiteUserRegisterRequest request) {
-        var now = LocalDateTime.now();
-        siteUserService.registerSiteUser(request, now);
+        siteUserService.registerSiteUser(request, LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 
@@ -45,15 +44,13 @@ public class SiteUserController {
 
     @PutMapping("/update")
     public ResponseEntity<Void> updateSiteUser(@RequestBody @Validated SiteUserUpdateRequest request) {
-        var now = LocalDateTime.now();
-        siteUserService.updateSiteUser(request, now);
+        siteUserService.updateSiteUser(request, LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/delete")
     public ResponseEntity<Void> deleteSiteUser(@RequestBody @Validated SiteUserDeleteRequest request) {
-        var now = LocalDateTime.now();
-        siteUserService.deleteSiteUser(request.getId(), now);
+        siteUserService.deleteSiteUser(request.getId(), LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 }
