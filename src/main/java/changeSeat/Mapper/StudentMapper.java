@@ -1,10 +1,14 @@
 package changeSeat.Mapper;
 
 import changeSeat.Model.MyClass.Student;
+import changeSeat.Model.MyClass.StudentSeatInfo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 @Mapper
 public interface StudentMapper {
@@ -46,9 +50,26 @@ public interface StudentMapper {
               students
             SET
               student_name = null,
-              sex_type = 3
+              sex_type = 'OTHER'
             WHERE
               id = #{studentId}
             """)
     void updateStudentToEmpty(int studentId);
+
+    @Select("""
+            SELECT
+              s.id as seat_id,
+              s.seat_number,
+              st.id as student_id
+            FROM
+              seats s
+            INNER JOIN students st
+            ON s.id = st.seat_id
+            AND st.delete_flg = 'FLAG_OFF'
+            WHERE
+              s.class_id = #{classId}
+              AND s.empty_seat_flg = 'FLAG_OFF'
+              AND s.delete_flg = 'FLAG_OFF'
+            """)
+    List<StudentSeatInfo> getStudentSeatInfo(int classId);
 }

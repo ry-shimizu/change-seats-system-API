@@ -1,5 +1,6 @@
 package changeSeat.Service;
 
+import changeSeat.Enum.EnumAuthority;
 import changeSeat.Error.Exception.InvalidInputException;
 import changeSeat.Mapper.SiteUserMapper;
 import changeSeat.Model.SiteUser.SiteUserDetail;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
@@ -25,8 +28,10 @@ public class SiteUserService {
     private final SiteUserMapper siteUserMapper;
 
     // 一覧取得
-    public List<SiteUserDetail> getSiteUserList() {
-        return siteUserMapper.getSiteUserList();
+    public List<SiteUserDetail> getSiteUserList(String loginId, String userName, String[] authority) {
+        return siteUserMapper.getSiteUserList(loginId, userName,
+                Arrays.stream(Optional.ofNullable(authority).orElse(new String[]{"1", "2"}))
+                        .map(EnumAuthority::create).toList());
     }
 
     // 登録

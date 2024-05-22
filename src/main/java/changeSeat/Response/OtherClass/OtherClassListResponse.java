@@ -7,9 +7,9 @@ import java.util.List;
 
 @Data
 public class OtherClassListResponse {
-    List<OtherClassList> otherClassList;
+    List<OtherClassList> classList;
 
     public OtherClassListResponse(List<OtherClassList> otherClassList) {
-        this.otherClassList = otherClassList;
+        this.classList = otherClassList;
     }
 }

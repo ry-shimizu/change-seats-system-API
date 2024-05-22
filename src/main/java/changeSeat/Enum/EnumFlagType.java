@@ -7,22 +7,22 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public enum EnumFlagType {
-    FLAG_ON(1),
-    FLAG_OFF(0);
 
-    private int value;
+    FLAG_OFF("0"), FLAG_ON("1");
 
-    private EnumFlagType(int value) {
+    private final String value;
+
+    private EnumFlagType(String value) {
         this.value = value;
     }
 
     @JsonValue
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 
     @JsonCreator
-    public EnumFlagType create(Integer value) {
+    public EnumFlagType create(String value) {
         if (Objects.isNull(value)) {
             return null;
         }

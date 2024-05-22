@@ -1,7 +1,7 @@
 package changeSeat.Mapper;
 
-import changeSeat.Model.MyClass.OverSeatNumInfo;
 import changeSeat.Model.MyClass.Seat;
+import changeSeat.Model.MyClass.StudentSeatInfo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -41,7 +41,7 @@ public interface SeatMapper {
 
     @Select("""
             SELECT
-              id,
+              id as seat_id,
               seat_number
             FROM
               seats
@@ -50,7 +50,7 @@ public interface SeatMapper {
               AND seat_number >= #{seatNumber}
               AND delete_flg = 'FLAG_OFF'
             """)
-    List<OverSeatNumInfo> getOverSeatNumber(int classId, int seatNumber);
+    List<StudentSeatInfo> getOverSeatNumber(int classId, int seatNumber);
 
     @Update("""
               UPDATE
@@ -87,4 +87,17 @@ public interface SeatMapper {
                 AND delete_flg = 'FLAG_OFF'
             """)
     void updateSeatToEmpty(int SeatId, int classId, LocalDateTime now);
+
+    @Update("""
+              UPDATE
+                seats
+              SET
+                seat_number = #{seatNumber},
+                updated_dt = #{now}
+              WHERE
+                class_id = #{classId}
+                AND id = #{seatId}
+                AND delete_flg = 'FLAG_OFF'
+            """)
+    void updateSeatNumberById(int seatId, int classId, int seatNumber, LocalDateTime now);
 }

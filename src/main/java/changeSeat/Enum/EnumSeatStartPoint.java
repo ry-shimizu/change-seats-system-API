@@ -6,22 +6,24 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.stream.Stream;
 
 public enum EnumSeatStartPoint {
-    RIGHT(1),
-    LEFT(2);
+    RIGHT("1"),
+    LEFT("2"),
+    BEFORE("3"),
+    AFTER("4");
 
-    private int value;
+    private final String value;
 
-    private EnumSeatStartPoint(int value) {
+    private EnumSeatStartPoint(String value) {
         this.value = value;
     }
 
     @JsonValue
-    public int getValue() {
+    public String getValue() {
         return this.value;
     }
 
     @JsonCreator
-    public EnumSeatStartPoint crete(Integer value) {
+    public EnumSeatStartPoint crete(String value) {
         return Stream.of(EnumSeatStartPoint.values())
                 .filter(v -> value.equals(v.getValue()))
                 .findFirst().orElseThrow(IllegalArgumentException::new);

@@ -13,9 +13,11 @@ import changeSeat.Model.MyClass.MyClassList;
 import changeSeat.Model.MyClass.Seat;
 import changeSeat.Model.MyClass.Student;
 import changeSeat.Model.MyClass.StudentForCsv;
-import changeSeat.Request.MyClass.MyClassDeleteSeatRequest;
-import changeSeat.Request.MyClass.MyClassUpdateSeatRequest;
+import changeSeat.Model.MyClass.StudentSeatInfo;
 import changeSeat.Request.MyClass.MycClassRegisterRequest;
+import changeSeat.Request.MyClass.Seat.MyClassChangeSeatRequest;
+import changeSeat.Request.MyClass.Seat.MyClassDeleteSeatRequest;
+import changeSeat.Request.MyClass.Seat.MyClassUpdateSeatRequest;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +33,13 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +68,7 @@ public class MyClassService {
 
         overSeatNumbers.stream()
                 .filter(s -> minDigits < s.getSeatNumber() && s.getSeatNumber() <= maxDigits)
-                .forEach(s -> seatMapper.updateSeatNumber(s.getSeatNumber() + 1, s.getSeatNumber(), s.getId(), request.getClassId(), now));
+                .forEach(s -> seatMapper.updateSeatNumber(s.getSeatNumber() + 1, s.getSeatNumber(), s.getSeatId(), request.getClassId(), now));
 
         try {
             var seat = Seat.builder()
@@ -101,11 +107,89 @@ public class MyClassService {
 
             overSeatNumbers.stream()
                     .filter(s -> minDigits < s.getSeatNumber() && s.getSeatNumber() <= maxDigits)
-                    .forEach(s -> seatMapper.updateSeatNumber(s.getSeatNumber() - 1, s.getSeatNumber(), s.getId(), request.getClassId(), now));
+                    .forEach(s -> seatMapper.updateSeatNumber(s.getSeatNumber() - 1, s.getSeatNumber(), s.getSeatId(), request.getClassId(), now));
 
             seatMapper.deleteSeat(request.getSeatId());
             studentMapper.deleteStudent(request.getStudentId());
         }
+    }
+
+    public List<MyClassDetail> changeSeat(MyClassChangeSeatRequest request, LocalDateTime now) {
+        var studentSeatInfoList = studentMapper.getStudentSeatInfo(request.getClassId());
+        var seatNumberList = new ArrayList<>(studentSeatInfoList.stream().map(StudentSeatInfo::getSeatNumber).toList());
+        Collections.shuffle(seatNumberList);
+
+        if (request.getChangeSeatConditionList().size() > 0) {
+            var maxY = seatNumberList.stream().map(s -> s % 10).max(Integer::compare).orElseThrow(() -> new InvalidInputException("座席が存在しません。"));
+
+            var maxX = seatNumberList.stream().map(s -> s / 10).max(Integer::compare).orElseThrow(() -> new InvalidInputException("座席が存在しません。"));
+
+            var studentSeatInfoChangeList = new ArrayList<StudentSeatInfo>();
+            request.getChangeSeatConditionList()
+                    .forEach(c -> {
+                        var seatNumberChangeList = new ArrayList<Integer>();
+                        var seatNumberNotChangeList = new ArrayList<Integer>();
+
+                        if (!Objects.isNull(c.getPositionYColumn()) && Objects.equals(c.getConditionY().getValue(), "3")) {
+                            seatNumberList.stream().filter(s -> s % 10 <= c.getPositionYColumn()).forEach(seatNumberChangeList::add);
+                        }
+
+                        if (!Objects.isNull(c.getPositionYColumn()) && Objects.equals(c.getConditionY().getValue(), "4")) {
+                            seatNumberList.stream().filter(s -> s % 10 > maxY - c.getPositionYColumn()).forEach(seatNumberChangeList::add);
+                        }
+
+                        if (!Objects.isNull(c.getPositionXColumn()) && Objects.equals(c.getConditionX().getValue(), "1")) {
+                            if (seatNumberChangeList.size() > 0) {
+                                seatNumberChangeList.stream()
+                                        .filter(s -> Objects.equals(request.getEnumSeatStartPoint().getValue(), "2")
+                                                ? s / 10 <= maxX - c.getPositionXColumn()
+                                                : !Objects.equals(request.getEnumSeatStartPoint().getValue(), "1") || s / 10 > c.getPositionXColumn()).forEach(seatNumberNotChangeList::add);
+                            } else {
+                                seatNumberList.stream().filter(s -> Objects.equals(request.getEnumSeatStartPoint().getValue(), "2")
+                                        ? s / 10 >= maxX - c.getPositionXColumn()
+                                        : !Objects.equals(request.getEnumSeatStartPoint().getValue(), "1") || s / 10 <= c.getPositionXColumn()).forEach(seatNumberChangeList::add);
+                            }
+                        }
+
+                        if (!Objects.isNull(c.getPositionXColumn()) && Objects.equals(c.getConditionX().getValue(), "2")) {
+                            if (seatNumberChangeList.size() > 0) {
+                                seatNumberChangeList.stream()
+                                        .filter(s -> Objects.equals(request.getEnumSeatStartPoint().getValue(), "2")
+                                                ? s / 10 > c.getPositionXColumn()
+                                                : !Objects.equals(request.getEnumSeatStartPoint().getValue(), "1") || s / 10 <= maxX - c.getPositionXColumn()).forEach(seatNumberNotChangeList::add);
+                            } else {
+                                seatNumberList.stream().filter(s -> Objects.equals(request.getEnumSeatStartPoint().getValue(), "2")
+                                        ? s / 10 <= c.getPositionXColumn()
+                                        : !Objects.equals(request.getEnumSeatStartPoint().getValue(), "1") || s / 10 >= maxX - c.getPositionXColumn()).forEach(seatNumberChangeList::add);
+                            }
+                        }
+                        var result = seatNumberChangeList.stream()
+                                .filter(num -> !seatNumberNotChangeList.contains(num))
+                                .toList();
+
+                        if (result.size() == 0) {
+                            throw new InvalidInputException("席替え条件の指定範囲に誤りがあります。");
+                        }
+
+                        var changedSeatNumber = result.get(new Random().nextInt(result.size()));
+                        seatNumberList.removeIf(s -> s.intValue() == changedSeatNumber.intValue());
+                        seatNumberList.add(changedSeatNumber);
+                        studentSeatInfoList.removeIf(s -> s.getStudentId() == c.getStudentId());
+
+                        studentSeatInfoChangeList.add(StudentSeatInfo.builder()
+                                .seatId(c.getSeatId())
+                                .studentId(c.getStudentId())
+                                .seatNumber(changedSeatNumber)
+                                .build());
+                    });
+            studentSeatInfoList.addAll(studentSeatInfoChangeList);
+        }
+
+        IntStream.range(0, studentSeatInfoList.size()).forEach(i -> {
+            seatMapper.updateSeatNumberById(studentSeatInfoList.get(i).getSeatId(), request.getClassId(), seatNumberList.get(i), now);
+        });
+
+        return myClassMapper.getMyClassDetail(request.getClassId(), request.getSiteUserId());
     }
 
     public void registerMyClass(MultipartFile multipartFile, MycClassRegisterRequest request, LocalDateTime now) {
@@ -123,7 +207,7 @@ public class MyClassService {
                 studentsList = builder.build().parse();
             }
 
-            if (studentsList.size() != request.getSeatNumberList().size()) {
+            if (studentsList.size() != request.getSeatNumberList().stream().mapToInt(MycClassRegisterRequest.SeatNumber::getSeatNum).sum()) {
                 throw new InvalidInputException("入力された生徒数と座席数が一致しません。");
             }
 
@@ -160,7 +244,7 @@ public class MyClassService {
                         studentMapper.insertStudent(Student.builder()
                                 .seatId(seat.getId())
                                 .studentName(studentsList.get(Integer.parseInt(String.valueOf(studentCount)) - 1).getStudentName())
-                                .sexType(EnumSexType.getEnumSexType(Integer.parseInt(studentsList.get(Integer.parseInt(String.valueOf(studentCount)) - 1).getSexType())))
+                                .sexType(EnumSexType.getEnumSexType(studentsList.get(Integer.parseInt(String.valueOf(studentCount)) - 1).getSexType()))
                                 .createdBy(request.getSiteUserId())
                                 .createdDt(now)
                                 .updatedBy(request.getSiteUserId())

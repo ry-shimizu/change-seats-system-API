@@ -44,7 +44,7 @@ public class OtherClassController {
 
     @PutMapping("/delete")
     public ResponseEntity<Void> deleteOtherClass(@RequestBody @Validated OtherClassDeleteRequest request) {
-        otherClassService.deleteOtherClass(request.getOtherClassId(), LocalDateTime.now());
+        otherClassService.deleteOtherClass(request.getClassId(), request.getSiteUserId(), LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 

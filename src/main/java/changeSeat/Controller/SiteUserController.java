@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -27,8 +28,11 @@ public class SiteUserController {
     private final SiteUserService siteUserService;
 
     @GetMapping("/")
-    public SiteUserListResponse getSiteUserList() {
-        return new SiteUserListResponse(siteUserService.getSiteUserList());
+    public SiteUserListResponse getSiteUserList(
+            @RequestParam(value = "loginId", required = false) String loginId,
+            @RequestParam(value = "userName", required = false) String userName,
+            @RequestParam(value = "authority", required = false) String[] authority) {
+        return new SiteUserListResponse(siteUserService.getSiteUserList(loginId, userName, authority));
     }
 
     @PostMapping("/register")

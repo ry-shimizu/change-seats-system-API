@@ -3,28 +3,29 @@ package changeSeat.Enum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 
 public enum EnumSexType {
-    MAN(1),
-    WOMAN(2),
-    OTHER(3);
+    MAN("1"),
+    WOMAN("2"),
+    OTHER("3");
 
-    private final int value;
+    private final String value;
 
-    private EnumSexType(int value) {
+    private EnumSexType(String value) {
         this.value = value;
     }
 
     @JsonValue
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 
     @JsonCreator
-    public EnumSexType create(Integer value) {
+    public EnumSexType create(String value) {
         if (isNull(value)) {
             return null;
         }
@@ -34,9 +35,9 @@ public enum EnumSexType {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static EnumSexType getEnumSexType(int value) {
+    public static EnumSexType getEnumSexType(String value) {
         return Stream.of(values())
-                .filter(v -> value == v.getValue())
+                .filter(v -> Objects.equals(value, v.getValue()))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }

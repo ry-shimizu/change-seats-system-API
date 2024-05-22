@@ -1,4 +1,4 @@
-package changeSeat.Request.MyClass;
+package changeSeat.Request.MyClass.Seat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;

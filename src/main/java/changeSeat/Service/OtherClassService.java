@@ -27,7 +27,7 @@ public class OtherClassService {
     }
 
     public List<OtherClassList> getOtherClassList(OtherClassSearchRequest request) {
-        return otherClassMapper.getOtherClassList(request.getClassYear(), request.getClassName(), request.getTitle());
+        return otherClassMapper.getOtherClassList(request.getClassYear(), request.getClassName(), request.getTitle(), request.getSiteUserId());
     }
 
     public void registerOtherClass(int siteUserId, int classId, LocalDateTime now) {
@@ -46,8 +46,8 @@ public class OtherClassService {
         }
     }
 
-    public void deleteOtherClass(int otherClassId, LocalDateTime now) {
-        otherClassMapper.updateDeleteFlg(otherClassId, 0, now);
+    public void deleteOtherClass(int classId, int siteUserId, LocalDateTime now) {
+        otherClassMapper.updateDeleteFlg(classId, siteUserId, now);
     }
 
     public OtherClassDetailDto getOtherClassDetail(int classId, int siteUserId) {

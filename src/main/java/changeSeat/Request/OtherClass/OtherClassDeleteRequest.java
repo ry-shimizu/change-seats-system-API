@@ -7,5 +7,8 @@ import lombok.Data;
 public class OtherClassDeleteRequest {
 
     @NotNull
-    private Integer otherClassId;
+    private Integer classId;
+
+    @NotNull
+    private Integer siteUserId;
 }

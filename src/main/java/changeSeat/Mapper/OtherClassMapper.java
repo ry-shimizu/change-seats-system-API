@@ -16,6 +16,7 @@ public interface OtherClassMapper {
 
     @Select("""
             SELECT
+              c.id AS classId,
               c.class_year,
               c.class_name,
               c.title,
@@ -34,6 +35,7 @@ public interface OtherClassMapper {
               oc.site_user_id = #{siteUserId}
               AND oc.delete_flg = 'FLAG_OFF'
             GROUP BY
+              c.id,
               c.class_year,
               c.class_name,
               c.title,
@@ -44,30 +46,29 @@ public interface OtherClassMapper {
     @Select("""
             <script>
               SELECT
+                c.id AS classId,
                 c.class_year,
                 c.class_name,
                 c.title,
                 c.updated_dt,
                 COUNT(s.id) AS student_num
               FROM
-                other_classes oc
-              INNER JOIN classes c
-              ON oc.class_id = c.id
-              AND c.delete_flg = 'FLAG_OFF'
+                classes c
               INNER JOIN seats s
               ON c.id = s.class_id
               AND s.delete_flg = 'FLAG_OFF'
               AND s.empty_seat_flg = 'FLAG_OFF'
               WHERE
-                oc.delete_flg = 'FLAG_OFF'
+                c.delete_flg = 'FLAG_OFF'
+              AND c.site_user_id != #{siteUserId}
               <if test="classYear != null">
                 AND c.class_year = #{classYear}
               </if>
               <if test="className != null and className != ''">
-                AND c.class_name = #{className}
+                AND c.class_name LIKE CONCAT('%', #{className}, '%')
               </if>
-              <if test="title != null and className != ''">
-                AND c.title = #{title}
+              <if test="title != null and title != ''">
+                AND c.title LIKE CONCAT('%', #{title}, '%')
               </if>
               GROUP BY
                 c.class_year,
@@ -76,7 +77,7 @@ public interface OtherClassMapper {
                 c.updated_dt
             </script>
             """)
-    List<OtherClassList> getOtherClassList(Integer classYear, String className, String title);
+    List<OtherClassList> getOtherClassList(Integer classYear, String className, String title, int siteUserId);
 
     @Insert("""
             INSERT INTO other_classes (
@@ -106,14 +107,16 @@ public interface OtherClassMapper {
             SET
               updated_by = #{siteUserId},
               updated_dt = #{now},
-              delete_flg = 1
+              delete_flg = 'FLAG_ON'
             WHERE
-              id = #{otherClassId}
+              class_id = #{classId}
+              AND site_user_id = #{siteUserId}
             """)
-    void updateDeleteFlg(int otherClassId, int siteUserId, LocalDateTime now);
+    void updateDeleteFlg(int classId, int siteUserId, LocalDateTime now);
 
     @Select("""
             SELECT
+              
               c.class_name,
               c.title,
               s.seat_number,

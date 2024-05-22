@@ -8,22 +8,23 @@ import java.util.stream.Stream;
 import static java.util.Objects.isNull;
 
 public enum EnumAuthority {
-    ADMIN(1),
-    GENERAL(2);
+    SCHOOL_ADMIN("1"),
+    GENERAL("2"),
+    MASTER("3");
 
-    private final int value;
+    private final String value;
 
-    private EnumAuthority(int value) {
+    private EnumAuthority(String value) {
         this.value = value;
     }
 
     @JsonValue
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 
     @JsonCreator
-    public static EnumAuthority create(Integer value) {
+    public static EnumAuthority create(String value) {
         if (isNull(value)) {
             return null;
         }

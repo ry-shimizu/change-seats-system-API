@@ -1,4 +1,4 @@
-package changeSeat.Request.MyClass;
+package changeSeat.Request.MyClass.Seat;
 
 import changeSeat.Enum.EnumSexType;
 import com.fasterxml.jackson.annotation.JsonProperty;

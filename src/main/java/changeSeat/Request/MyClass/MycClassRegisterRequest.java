@@ -1,6 +1,8 @@
 package changeSeat.Request.MyClass;
 
 import changeSeat.Enum.EnumSeatStartPoint;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -31,6 +33,8 @@ public class MycClassRegisterRequest {
     public static class SeatNumber {
 
         @NotNull
+        @Max(9)
+        @Min(1)
         private Integer seatNum;
     }
 }

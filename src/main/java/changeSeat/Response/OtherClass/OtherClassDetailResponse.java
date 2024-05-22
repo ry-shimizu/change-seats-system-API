@@ -19,7 +19,7 @@ public class OtherClassDetailResponse {
 
     private boolean isMyOtherClass;
 
-    private List<SeatsInfo> seatsInfo;
+    private List<SeatsAddColInfo> seatsAddColInfo;
 
     public OtherClassDetailResponse(OtherClassService.OtherClassDetailDto otherClassDetailDto) {
         setMyOtherClass(otherClassDetailDto.isMyOtherClass());
@@ -29,12 +29,27 @@ public class OtherClassDetailResponse {
             setClassName(otherClassDetails.get(0).getClassName());
             setTitle(otherClassDetails.get(0).getTitle());
 
-            setSeatsInfo(otherClassDetails.stream().map(oc -> SeatsInfo.builder()
-                    .seatNumber(oc.getSeatNumber())
-                    .sexType(oc.getSexType())
-                    .studentName(oc.getStudentName())
-                    .build()).collect(Collectors.toList()));
+            var groupedByTens = otherClassDetails.stream()
+                    .map(oc -> SeatsInfo.builder()
+                            .seatNumber(oc.getSeatNumber())
+                            .sexType(oc.getSexType())
+                            .studentName(oc.getStudentName())
+                            .build())
+                    .collect(Collectors.groupingBy(seatInfo -> seatInfo.getSeatNumber() / 10));
+
+            setSeatsAddColInfo(groupedByTens.values().stream()
+                    .map(seatsInfo -> SeatsAddColInfo.builder()
+                            .seatsInfo(seatsInfo)
+                            .build())
+                    .toList());
         }
+    }
+
+    @Data
+    @Builder
+    public static class SeatsAddColInfo {
+        private List<SeatsInfo> seatsInfo;
+
     }
 
     @Data

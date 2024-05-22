@@ -5,6 +5,7 @@ import changeSeat.Model.MyClass.MyClassDetail;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,14 @@ public class MyClassDetailResponse {
             setTitle(myClassDetails.get(0).getTitle());
 
             setSeatsInfo(myClassDetails.stream().map(oc -> SeatsInfo.builder()
-                    .seatId(oc.getSeatId())
-                    .seatNumber(oc.getSeatNumber())
-                    .sexType(oc.getSexType())
-                    .studentName(oc.getStudentName())
-                    .build()).collect(Collectors.toList()));
+                            .seatId(oc.getSeatId())
+                            .seatNumber(oc.getSeatNumber())
+                            .sexType(oc.getSexType())
+                            .studentName(oc.getStudentName())
+                            .studentId(oc.getStudentId())
+                            .build())
+                    .sorted(Comparator.comparingInt(o -> o.seatNumber))
+                    .collect(Collectors.toList()));
         }
     }
 

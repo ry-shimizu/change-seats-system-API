@@ -1,10 +1,11 @@
 package changeSeat.Controller;
 
-import changeSeat.Request.MyClass.MyClassDeleteSeatRequest;
 import changeSeat.Request.MyClass.MyClassDetailRequest;
 import changeSeat.Request.MyClass.MyClassListRequest;
-import changeSeat.Request.MyClass.MyClassUpdateSeatRequest;
 import changeSeat.Request.MyClass.MycClassRegisterRequest;
+import changeSeat.Request.MyClass.Seat.MyClassChangeSeatRequest;
+import changeSeat.Request.MyClass.Seat.MyClassDeleteSeatRequest;
+import changeSeat.Request.MyClass.Seat.MyClassUpdateSeatRequest;
 import changeSeat.Response.MyClass.MyClassDetailResponse;
 import changeSeat.Response.MyClass.MyClassListResponse;
 import changeSeat.Service.MyClassService;
@@ -53,6 +54,11 @@ public class MyClassController {
     public ResponseEntity<Void> deleteSeat(@RequestBody @Validated MyClassDeleteSeatRequest request) {
         myClassService.deleteSeat(request, LocalDateTime.now());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change/seat")
+    public MyClassDetailResponse changeSeat(@RequestBody @Validated MyClassChangeSeatRequest request) {
+        return new MyClassDetailResponse(myClassService.changeSeat(request, LocalDateTime.now()));
     }
 
 }
