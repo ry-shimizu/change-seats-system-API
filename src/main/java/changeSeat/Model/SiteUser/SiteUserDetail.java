@@ -16,4 +16,8 @@ public class SiteUserDetail {
     private EnumAuthority authority;
 
     private EnumFlagType deleteFlg;
+
+    private String schoolName;
+
+    private int schoolId;
 }

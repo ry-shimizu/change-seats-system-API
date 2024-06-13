@@ -1,5 +1,6 @@
 package changeSeat.Mapper;
 
+import changeSeat.Enum.EnumSexType;
 import changeSeat.Model.MyClass.Student;
 import changeSeat.Model.MyClass.StudentSeatInfo;
 import org.apache.ibatis.annotations.Delete;
@@ -8,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -49,12 +51,14 @@ public interface StudentMapper {
             UPDATE
               students
             SET
-              student_name = null,
-              sex_type = 'OTHER'
+              student_name = #{studentName},
+              sex_type = #{sexType},
+              updated_dt = #{now},
+              updated_by = #{siteUserId}
             WHERE
               id = #{studentId}
             """)
-    void updateStudentToEmpty(int studentId);
+    void updateStudent(int studentId, String studentName, EnumSexType sexType, LocalDateTime now, int siteUserId);
 
     @Select("""
             SELECT

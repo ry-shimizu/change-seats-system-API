@@ -50,7 +50,7 @@ public class OtherClassController {
 
     @PostMapping("/detail")
     public OtherClassDetailResponse getOtherClassDetail(@RequestBody @Validated OtherClassDetailRequest request) {
-        return new OtherClassDetailResponse(otherClassService.getOtherClassDetail(request.getClassId(), request.getSiteUserId()));
+        return new OtherClassDetailResponse(otherClassService.getOtherClassDetail(request.getClassId(), request.getSiteUserId(), request.getSchoolId()));
     }
 
 }

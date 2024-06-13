@@ -1,5 +1,6 @@
 package changeSeat.Service;
 
+import changeSeat.Error.Exception.NotFoundException;
 import changeSeat.Mapper.OtherClassMapper;
 import changeSeat.Model.OtherClass.OtherClassDetail;
 import changeSeat.Model.OtherClass.OtherClassList;
@@ -27,7 +28,13 @@ public class OtherClassService {
     }
 
     public List<OtherClassList> getOtherClassList(OtherClassSearchRequest request) {
-        return otherClassMapper.getOtherClassList(request.getClassYear(), request.getClassName(), request.getTitle(), request.getSiteUserId());
+        return otherClassMapper.getOtherClassList(
+                request.getClassYear(),
+                request.getClassName(),
+                request.getTitle(),
+                request.getSiteUserId(),
+                request.getSchoolId()
+        );
     }
 
     public void registerOtherClass(int siteUserId, int classId, LocalDateTime now) {
@@ -50,10 +57,16 @@ public class OtherClassService {
         otherClassMapper.updateDeleteFlg(classId, siteUserId, now);
     }
 
-    public OtherClassDetailDto getOtherClassDetail(int classId, int siteUserId) {
+    public OtherClassDetailDto getOtherClassDetail(int classId, int siteUserId, int schoolId) {
+        var otherClassDetailList = otherClassMapper.getOtherClassDetail(classId, schoolId);
+
+        if (otherClassDetailList.size() == 0) {
+            throw new NotFoundException(String.format("classId：%d、schoolId:%dのクラスは存在しません。", classId, schoolId));
+        }
+
         return OtherClassDetailDto.builder()
                 .isMyOtherClass(otherClassMapper.checkMyOtherClass(classId, siteUserId))
-                .otherClassDetails(otherClassMapper.getOtherClassDetail(classId)).build();
+                .otherClassDetails(otherClassDetailList).build();
     }
 
 

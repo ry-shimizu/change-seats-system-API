@@ -58,6 +58,9 @@ public interface OtherClassMapper {
               ON c.id = s.class_id
               AND s.delete_flg = 'FLAG_OFF'
               AND s.empty_seat_flg = 'FLAG_OFF'
+              <if test="schoolId != null">
+                AND c.school_id = #{schoolId}
+              </if>
               WHERE
                 c.delete_flg = 'FLAG_OFF'
               AND c.site_user_id != #{siteUserId}
@@ -77,7 +80,7 @@ public interface OtherClassMapper {
                 c.updated_dt
             </script>
             """)
-    List<OtherClassList> getOtherClassList(Integer classYear, String className, String title, int siteUserId);
+    List<OtherClassList> getOtherClassList(Integer classYear, String className, String title, int siteUserId, Integer schoolId);
 
     @Insert("""
             INSERT INTO other_classes (
@@ -116,7 +119,6 @@ public interface OtherClassMapper {
 
     @Select("""
             SELECT
-              
               c.class_name,
               c.title,
               s.seat_number,
@@ -133,9 +135,11 @@ public interface OtherClassMapper {
             AND stu.delete_flg = 'FLAG_OFF'
             WHERE
               c.id = #{classId}
+              AND c.school_id = #{schoolId}
               AND c.delete_flg = 'FLAG_OFF'
+            ORDER BY s.seat_number
             """)
-    List<OtherClassDetail> getOtherClassDetail(int classId);
+    List<OtherClassDetail> getOtherClassDetail(int classId, int schoolId);
 
     @Select("""
             SELECT

@@ -9,6 +9,8 @@ public class OtherClassSearchRequest {
     @NotNull
     private Integer siteUserId;
 
+    private Integer schoolId;
+
     private Integer classYear;
 
     private String className;

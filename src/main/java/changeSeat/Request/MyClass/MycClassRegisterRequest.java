@@ -12,6 +12,9 @@ import java.util.List;
 public class MycClassRegisterRequest {
 
     @NotNull
+    private Integer schoolId;
+
+    @NotNull
     private Integer siteUserId;
 
     @NotNull

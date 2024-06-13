@@ -12,12 +12,14 @@ public class SiteUserDetailResponse {
     private String userName;
     private EnumAuthority authority;
     private EnumFlagType deleteFlg;
+    private int schoolId;
 
-    public SiteUserDetailResponse(SiteUserDetail siteUserDetailDto) {
-        this.id = siteUserDetailDto.getId();
-        this.loginId = siteUserDetailDto.getLoginId();
-        this.userName = siteUserDetailDto.getUserName();
-        this.authority = siteUserDetailDto.getAuthority();
-        this.deleteFlg = siteUserDetailDto.getDeleteFlg();
+    public SiteUserDetailResponse(SiteUserDetail siteUserDetail) {
+        this.id = siteUserDetail.getId();
+        this.loginId = siteUserDetail.getLoginId();
+        this.userName = siteUserDetail.getUserName();
+        this.authority = siteUserDetail.getAuthority();
+        this.deleteFlg = siteUserDetail.getDeleteFlg();
+        this.schoolId = siteUserDetail.getSchoolId();
     }
 }

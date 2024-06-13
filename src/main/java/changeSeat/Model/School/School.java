@@ -1,6 +1,5 @@
-package changeSeat.Model.SiteUser;
+package changeSeat.Model.School;
 
-import changeSeat.Enum.EnumAuthority;
 import changeSeat.Enum.EnumFlagType;
 import lombok.Builder;
 import lombok.Data;
@@ -9,19 +8,10 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class SiteUserRegister {
+public class School {
+    private Integer id;
 
-    private int id;
-
-    private String loginId;
-
-    private String userName;
-
-    private EnumAuthority authority;
-
-    private String password;
-
-    private int schoolId;
+    private String schoolName;
 
     private EnumFlagType deleteFlg;
 
@@ -32,4 +22,5 @@ public class SiteUserRegister {
     private int updatedBy;
 
     private LocalDateTime updatedDt;
+
 }

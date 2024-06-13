@@ -10,7 +10,10 @@ import lombok.Data;
 @Data
 public class SiteUserUpdateRequest {
     @NotNull
-    private Integer id;
+    private Integer updateSiteUserId;
+
+    @NotNull
+    private Integer loginSiteUserId;
 
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9 ]*$")
@@ -24,6 +27,8 @@ public class SiteUserUpdateRequest {
     @Size(max = 40)
     private String userName;
 
-
     private String password;
+
+    @NotNull
+    private Integer schoolId;
 }

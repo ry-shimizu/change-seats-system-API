@@ -8,9 +8,9 @@ import java.util.stream.Stream;
 import static java.util.Objects.isNull;
 
 public enum EnumAuthority {
-    SCHOOL_ADMIN("1"),
+    ADMIN("1"),
     GENERAL("2"),
-    MASTER("3");
+    SCHOOL_ADMIN("3");
 
     private final String value;
 

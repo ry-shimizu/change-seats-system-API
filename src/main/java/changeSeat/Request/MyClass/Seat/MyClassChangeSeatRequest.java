@@ -16,6 +16,9 @@ public class MyClassChangeSeatRequest {
     private Integer siteUserId;
 
     @NotNull
+    private Integer schoolId;
+
+    @NotNull
     private EnumSeatStartPoint enumSeatStartPoint;
 
     @NotNull

@@ -45,12 +45,14 @@ CREATE TABLE IF NOT EXISTS CLASSES(
     class_year SMALLINT NOT NULL,
     seat_start_point SEATSTARTPOINT NOT NULL,
     site_user_id INT NOT NULL,
+    school_id INT NOT NULL,
 	delete_flg FLAGTYPE NOT NULL,
 	created_by INT NOT NULL,
 	created_dt TIMESTAMP(0) NOT NULL,
 	updated_by INT NOT NULL,
     updated_dt TIMESTAMP(0) NOT NULL,
-    FOREIGN KEY (site_user_id) REFERENCES SITE_USERS(id)
+    FOREIGN KEY (site_user_id) REFERENCES SITE_USERS(id),
+    FOREIGN KEY (school_id) REFERENCES SCHOOLS(id)
 );
 
 CREATE TABLE IF NOT EXISTS OTHER_CLASSES(

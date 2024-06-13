@@ -1,10 +1,10 @@
-package changeSeat.Request.OtherClass;
+package changeSeat.Request.MyClass;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class OtherClassDetailRequest {
+public class MyClassUpdateRequest {
 
     @NotNull
     private Integer siteUserId;
@@ -14,4 +14,14 @@ public class OtherClassDetailRequest {
 
     @NotNull
     private Integer schoolId;
+
+    @NotNull
+    private String className;
+
+    @NotNull
+    private Integer classYear;
+
+    @NotNull
+    private String title;
+
 }

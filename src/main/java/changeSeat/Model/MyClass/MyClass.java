@@ -20,6 +20,8 @@ public class MyClass {
 
     private EnumSeatStartPoint seatStartPoint;
 
+    private int schoolId;
+
     private int siteUserId;
 
     private int createdBy;

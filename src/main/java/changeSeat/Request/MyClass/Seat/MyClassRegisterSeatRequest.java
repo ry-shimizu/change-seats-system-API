@@ -8,7 +8,8 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 @Data
-public class MyClassUpdateSeatRequest {
+public class MyClassRegisterSeatRequest {
+
     @NotNull
     private Integer classId;
 
@@ -16,15 +17,12 @@ public class MyClassUpdateSeatRequest {
     private Integer siteUserId;
 
     @NotNull
-    private EnumSexType sexType;
+    private Integer seatNumber;
 
     private String studentName;
 
     @NotNull
-    private Integer seatId;
-
-    @NotNull
-    private Integer studentId;
+    private EnumSexType sexType;
 
     @NotNull
     @JsonProperty("isEmptySeat")

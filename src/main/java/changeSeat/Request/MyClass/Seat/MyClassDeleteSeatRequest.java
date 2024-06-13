@@ -1,6 +1,5 @@
 package changeSeat.Request.MyClass.Seat;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -17,12 +16,6 @@ public class MyClassDeleteSeatRequest {
     private Integer studentId;
 
     @NotNull
-    private Integer siteUserId;
-
-    @NotNull
     private Integer seatNumber;
 
-    @NotNull
-    @JsonProperty("isEmptySeat")
-    private boolean isEmptySeat;
 }

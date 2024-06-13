@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class MyClassDetail {
 
+    private int classYear;
+
     private String className;
 
     private String title;

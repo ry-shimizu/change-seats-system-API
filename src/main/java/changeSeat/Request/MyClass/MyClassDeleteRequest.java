@@ -4,8 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class MyClassDetailRequest {
-
+public class MyClassDeleteRequest {
     @NotNull
     private Integer classId;
 
@@ -14,4 +13,5 @@ public class MyClassDetailRequest {
 
     @NotNull
     private Integer schoolId;
+
 }

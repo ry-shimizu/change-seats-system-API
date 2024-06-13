@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class SiteUserUpdate {
-    private int id;
+    private int updateSiteUserId;
 
     private String loginId;
 
@@ -22,4 +22,6 @@ public class SiteUserUpdate {
     private int updatedBy;
 
     private LocalDateTime updatedDt;
+
+    private int schoolId;
 }

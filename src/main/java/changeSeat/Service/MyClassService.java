@@ -4,6 +4,7 @@ import changeSeat.Enum.EnumFlagType;
 import changeSeat.Enum.EnumSexType;
 import changeSeat.Error.Exception.FileOperateException;
 import changeSeat.Error.Exception.InvalidInputException;
+import changeSeat.Error.Exception.NotFoundException;
 import changeSeat.Mapper.MyClassMapper;
 import changeSeat.Mapper.SeatMapper;
 import changeSeat.Mapper.StudentMapper;
@@ -14,9 +15,11 @@ import changeSeat.Model.MyClass.Seat;
 import changeSeat.Model.MyClass.Student;
 import changeSeat.Model.MyClass.StudentForCsv;
 import changeSeat.Model.MyClass.StudentSeatInfo;
+import changeSeat.Request.MyClass.MyClassUpdateRequest;
 import changeSeat.Request.MyClass.MycClassRegisterRequest;
 import changeSeat.Request.MyClass.Seat.MyClassChangeSeatRequest;
 import changeSeat.Request.MyClass.Seat.MyClassDeleteSeatRequest;
+import changeSeat.Request.MyClass.Seat.MyClassRegisterSeatRequest;
 import changeSeat.Request.MyClass.Seat.MyClassUpdateSeatRequest;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -56,11 +59,25 @@ public class MyClassService {
         return myClassMapper.getMyClassList(siteUserId);
     }
 
-    public List<MyClassDetail> getMyClassDetail(int classId, int siteUserId) {
-        return myClassMapper.getMyClassDetail(classId, siteUserId);
+    public List<MyClassDetail> getMyClassDetail(int classId, int siteUserId, int schoolId) {
+        var myClassDetail = myClassMapper.getMyClassDetail(classId, siteUserId, schoolId);
+
+        if (myClassDetail.size() == 0) {
+            throw new NotFoundException(String.format("classId：%d、schoolId:%dのクラスは存在しません。", classId, schoolId));
+        }
+
+        return myClassDetail;
     }
 
-    public void updateSeat(MyClassUpdateSeatRequest request, LocalDateTime now) {
+    public void updateMyClass(MyClassUpdateRequest request, LocalDateTime now) {
+        myClassMapper.updateMyClassInfo(request, now);
+    }
+
+    public void deleteMyClass(int classId, int schoolId, int siteUserId, LocalDateTime now) {
+        myClassMapper.updateDeleteFlg(classId, schoolId, siteUserId, now);
+    }
+
+    public void registerSeat(MyClassRegisterSeatRequest request, LocalDateTime now) {
         var overSeatNumbers = seatMapper.getOverSeatNumber(request.getClassId(), request.getSeatNumber());
         var targetDigits = request.getSeatNumber() / 10;
         var minDigits = targetDigits * 10;
@@ -95,23 +112,27 @@ public class MyClassService {
         }
     }
 
-    public void deleteSeat(MyClassDeleteSeatRequest request, LocalDateTime now) {
+    public void updateSeat(MyClassUpdateSeatRequest request, LocalDateTime now) {
         if (request.isEmptySeat()) {
-            seatMapper.updateSeatToEmpty(request.getSeatId(), request.getClassId(), now);
-            studentMapper.updateStudentToEmpty(request.getStudentId());
+            seatMapper.updateEmptySeatFlg(request.getSeatId(), request.getClassId(), now, "FLAG_ON", request.getSiteUserId());
+            studentMapper.updateStudent(request.getStudentId(), null, EnumSexType.OTHER, now, request.getSiteUserId());
         } else {
-            var overSeatNumbers = seatMapper.getOverSeatNumber(request.getClassId(), request.getSeatNumber());
-            var targetDigits = request.getSeatNumber() / 10;
-            var minDigits = targetDigits * 10;
-            var maxDigits = ((targetDigits + 1) * 10) - 1;
-
-            overSeatNumbers.stream()
-                    .filter(s -> minDigits < s.getSeatNumber() && s.getSeatNumber() <= maxDigits)
-                    .forEach(s -> seatMapper.updateSeatNumber(s.getSeatNumber() - 1, s.getSeatNumber(), s.getSeatId(), request.getClassId(), now));
-
-            seatMapper.deleteSeat(request.getSeatId());
-            studentMapper.deleteStudent(request.getStudentId());
+            seatMapper.updateEmptySeatFlg(request.getSeatId(), request.getClassId(), now, "FLAG_OFF", request.getSiteUserId());
+            studentMapper.updateStudent(request.getStudentId(), request.getStudentName(), request.getSexType(), now, request.getSiteUserId());
         }
+    }
+
+    public void deleteSeat(MyClassDeleteSeatRequest request, LocalDateTime now) {
+        var overSeatNumbers = seatMapper.getOverSeatNumber(request.getClassId(), request.getSeatNumber());
+        var targetDigits = request.getSeatNumber() / 10;
+        var minDigits = targetDigits * 10;
+        var maxDigits = ((targetDigits + 1) * 10) - 1;
+
+        overSeatNumbers.stream()
+                .filter(s -> minDigits < s.getSeatNumber() && s.getSeatNumber() <= maxDigits)
+                .forEach(s -> seatMapper.updateSeatNumber(s.getSeatNumber() - 1, s.getSeatNumber(), s.getSeatId(), request.getClassId(), now));
+        studentMapper.deleteStudent(request.getStudentId());
+        seatMapper.deleteSeat(request.getSeatId());
     }
 
     public List<MyClassDetail> changeSeat(MyClassChangeSeatRequest request, LocalDateTime now) {
@@ -189,7 +210,7 @@ public class MyClassService {
             seatMapper.updateSeatNumberById(studentSeatInfoList.get(i).getSeatId(), request.getClassId(), seatNumberList.get(i), now);
         });
 
-        return myClassMapper.getMyClassDetail(request.getClassId(), request.getSiteUserId());
+        return myClassMapper.getMyClassDetail(request.getClassId(), request.getSiteUserId(), request.getSchoolId());
     }
 
     public void registerMyClass(MultipartFile multipartFile, MycClassRegisterRequest request, LocalDateTime now) {
@@ -216,6 +237,7 @@ public class MyClassService {
                     .classYear(request.getYear())
                     .title(request.getTitle())
                     .seatStartPoint(request.getSeatStartPoint())
+                    .schoolId(request.getSchoolId())
                     .siteUserId(request.getSiteUserId())
                     .createdBy(request.getSiteUserId())
                     .createdDt(now)

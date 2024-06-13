@@ -5,35 +5,53 @@ import changeSeat.Model.MyClass.MyClassDetail;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 public class MyClassDetailResponse {
 
+    private int classYear;
+
     private String className;
 
     private String title;
 
-    private List<MyClassDetailResponse.SeatsInfo> seatsInfo;
+    private List<SeatsAddColInfo> seatsAddColInfo;
 
     public MyClassDetailResponse(List<MyClassDetail> myClassDetails) {
 
         if (!myClassDetails.isEmpty()) {
+            setClassYear(myClassDetails.get(0).getClassYear());
             setClassName(myClassDetails.get(0).getClassName());
             setTitle(myClassDetails.get(0).getTitle());
 
-            setSeatsInfo(myClassDetails.stream().map(oc -> SeatsInfo.builder()
-                            .seatId(oc.getSeatId())
-                            .seatNumber(oc.getSeatNumber())
-                            .sexType(oc.getSexType())
-                            .studentName(oc.getStudentName())
-                            .studentId(oc.getStudentId())
+            var groupedByTens = myClassDetails.stream()
+                    .map(c -> SeatsInfo.builder()
+                            .seatId(c.getSeatId())
+                            .seatNumber(c.getSeatNumber())
+                            .studentId(c.getStudentId())
+                            .sexType(c.getSexType())
+                            .studentName(c.getStudentName())
                             .build())
-                    .sorted(Comparator.comparingInt(o -> o.seatNumber))
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.groupingBy(seatInfo -> seatInfo.getSeatNumber() / 10));
+
+            setSeatsAddColInfo(groupedByTens.entrySet().stream()
+                    .map(seatsInfo -> SeatsAddColInfo.builder()
+                            .seatsInfo(seatsInfo.getValue())
+                            .col(seatsInfo.getKey())
+                            .build())
+                    .toList());
         }
+    }
+
+    @Data
+    @Builder
+    public static class SeatsAddColInfo {
+
+        private int col;
+        private List<SeatsInfo> seatsInfo;
+
     }
 
     @Data

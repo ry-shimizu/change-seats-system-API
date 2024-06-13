@@ -4,6 +4,7 @@ import changeSeat.Error.ErrorObject.ResourceError;
 import changeSeat.Error.ErrorObject.ValidationError;
 import changeSeat.Error.Exception.FileOperateException;
 import changeSeat.Error.Exception.InvalidInputException;
+import changeSeat.Error.Exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,12 @@ public class CommonExceptionHandler {
     public ResponseEntity<ResourceError> ExtendRuntimeExceptionHandler(RuntimeException e) {
         log.warn(String.format(" エラーメッセージ：%s", e.getMessage()), e);
         return ResponseEntity.badRequest().body(new ResourceError(e.getMessage()));
+    }
+
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity<Void> NotFoundExceptionHandler(RuntimeException e) {
+        log.warn(String.format(" エラーメッセージ：%s", e.getMessage()));
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})

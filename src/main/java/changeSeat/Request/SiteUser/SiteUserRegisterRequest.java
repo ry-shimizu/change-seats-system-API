@@ -18,6 +18,9 @@ public class SiteUserRegisterRequest {
     @NotNull
     private EnumAuthority authority;
 
+    @NotNull
+    private Integer schoolId;
+
     @NotBlank
     @Size(max = 40)
     private String userName;
