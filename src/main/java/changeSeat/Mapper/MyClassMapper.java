@@ -47,6 +47,7 @@ public interface MyClassMapper {
               c.class_year,
               c.class_name,
               c.title,
+              c.seat_start_point,
               s.id as seat_id,
               s.seat_number,
               s.empty_seat_flg,

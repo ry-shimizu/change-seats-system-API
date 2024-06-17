@@ -1,11 +1,13 @@
 package changeSeat.Response.MyClass;
 
+import changeSeat.Enum.EnumSeatStartPoint;
 import changeSeat.Enum.EnumSexType;
 import changeSeat.Model.MyClass.MyClassDetail;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
@@ -17,6 +19,8 @@ public class MyClassDetailResponse {
 
     private String title;
 
+    private EnumSeatStartPoint seatStartPoint;
+
     private List<SeatsAddColInfo> seatsAddColInfo;
 
     public MyClassDetailResponse(List<MyClassDetail> myClassDetails) {
@@ -25,6 +29,7 @@ public class MyClassDetailResponse {
             setClassYear(myClassDetails.get(0).getClassYear());
             setClassName(myClassDetails.get(0).getClassName());
             setTitle(myClassDetails.get(0).getTitle());
+            setSeatStartPoint(myClassDetails.get(0).getSeatStartPoint());
 
             var groupedByTens = myClassDetails.stream()
                     .map(c -> SeatsInfo.builder()
@@ -41,6 +46,12 @@ public class MyClassDetailResponse {
                             .seatsInfo(seatsInfo.getValue())
                             .col(seatsInfo.getKey())
                             .build())
+                    .sorted((a, b) -> {
+                        if (Objects.equals(seatStartPoint.getValue(), "1")) {
+                            return b.getCol() - a.getCol();
+                        }
+                        return a.getCol() - b.getCol();
+                    })
                     .toList());
         }
     }
