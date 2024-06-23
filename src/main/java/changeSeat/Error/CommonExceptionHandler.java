@@ -5,8 +5,10 @@ import changeSeat.Error.ErrorObject.ValidationError;
 import changeSeat.Error.Exception.FileOperateException;
 import changeSeat.Error.Exception.InvalidInputException;
 import changeSeat.Error.Exception.NotFoundException;
+import changeSeat.Error.Exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +32,12 @@ public class CommonExceptionHandler {
     public ResponseEntity<Void> NotFoundExceptionHandler(RuntimeException e) {
         log.warn(String.format(" エラーメッセージ：%s", e.getMessage()));
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<ResourceError> UnauthorizedExceptionHandler(RuntimeException e) {
+        log.warn(String.format(" エラーメッセージ：%s", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResourceError(e.getMessage()));
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
