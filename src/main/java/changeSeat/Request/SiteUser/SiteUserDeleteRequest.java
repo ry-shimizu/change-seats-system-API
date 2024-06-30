@@ -7,5 +7,8 @@ import lombok.Data;
 public class SiteUserDeleteRequest {
 
     @NotNull
+    private Integer siteUserId;
+    
+    @NotNull
     private Integer id;
 }

@@ -10,6 +10,9 @@ import lombok.Data;
 @Data
 public class SiteUserRegisterRequest {
 
+    @NotNull
+    private Integer siteUserId;
+
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9 ]*$")
     @Size(max = 30)

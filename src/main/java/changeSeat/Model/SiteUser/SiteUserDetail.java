@@ -20,4 +20,6 @@ public class SiteUserDetail {
     private String schoolName;
 
     private int schoolId;
+
+    private String password;
 }

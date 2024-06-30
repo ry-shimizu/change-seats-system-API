@@ -2,7 +2,6 @@ package changeSeat.Service;
 
 import changeSeat.Enum.EnumAuthority;
 import changeSeat.Error.Exception.InvalidInputException;
-import changeSeat.Mapper.SchoolMapper;
 import changeSeat.Mapper.SiteUserMapper;
 import changeSeat.Model.SiteUser.SiteUserDetail;
 import changeSeat.Model.SiteUser.SiteUserRegister;
@@ -12,12 +11,14 @@ import changeSeat.Request.SiteUser.SiteUserRegisterRequest;
 import changeSeat.Request.SiteUser.SiteUserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -28,7 +29,7 @@ import static java.util.Objects.isNull;
 public class SiteUserService {
 
     private final SiteUserMapper siteUserMapper;
-    private final SchoolMapper schoolMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     // 一覧取得
@@ -46,21 +47,19 @@ public class SiteUserService {
     // 登録
     public void registerSiteUser(SiteUserRegisterRequest request, LocalDateTime now) {
         try {
-            // TODO 複合化してパスワードチェック
-            if (checkDuplicateCertification(request.getLoginId(), request.getPassword(), null)) {
-                throw new InvalidInputException("入力されたログインIDとパスワードはすでに利用されています。");
+            if (!Objects.isNull(siteUserMapper.checkDuplicateLoginId(request.getLoginId(), null))) {
+                throw new InvalidInputException("入力されたログインIDはすでに利用されています。");
             }
-
             siteUserMapper.insert(
                     SiteUserRegister.builder().
                             loginId(request.getLoginId())
                             .userName(request.getUserName())
                             .authority(request.getAuthority())
-                            .password(request.getPassword())
+                            .password(passwordEncoder.encode(request.getPassword()))
                             .schoolId(request.getSchoolId())
-                            .createdBy(0) // TODO ログインユーザID
+                            .createdBy(request.getSiteUserId())
                             .createdDt(now)
-                            .updatedBy(0)
+                            .updatedBy(request.getSiteUserId())
                             .updatedDt(now)
                             .build());
         } catch (DuplicateKeyException e) {
@@ -80,8 +79,8 @@ public class SiteUserService {
     // ユーザー更新
     public void updateSiteUser(SiteUserUpdateRequest request, LocalDateTime now) {
 
-        if (checkDuplicateCertification(request.getLoginId(), request.getPassword(), request.getUpdateSiteUserId())) {
-            throw new InvalidInputException("入力されたログインIDとパスワードはすでに利用されています。");
+        if (!Objects.isNull(siteUserMapper.checkDuplicateLoginId(request.getLoginId(), request.getUpdateSiteUserId()))) {
+            throw new InvalidInputException("入力されたログインIDはすでに利用されています。");
         }
 
         siteUserMapper.update(SiteUserUpdate.builder()
@@ -89,20 +88,16 @@ public class SiteUserService {
                 .loginId(request.getLoginId())
                 .userName(request.getUserName())
                 .authority(request.getAuthority())
-                .password(request.getPassword()) // TODO パスワードチェックか既存値か
+                .password(request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : null)
                 .schoolId(request.getSchoolId())
-                .updatedBy(request.getLoginSiteUserId()) // TODO ログインユーザID
+                .updatedBy(request.getSiteUserId())
                 .updatedDt(now)
                 .build());
     }
 
     // ユーザー論理削除
-    public void deleteSiteUser(int id, LocalDateTime now) {
-        siteUserMapper.updateDeleteFlg(id, 0, now);
-    }
-
-    public boolean checkDuplicateCertification(String loginId, String password, Integer updateSiteUserId) {
-        return siteUserMapper.checkDuplicateCertification(loginId, password, updateSiteUserId) > 0;
+    public void deleteSiteUser(int siteUserId, int id, LocalDateTime now) {
+        siteUserMapper.updateDeleteFlg(id, siteUserId, now);
     }
 
 }

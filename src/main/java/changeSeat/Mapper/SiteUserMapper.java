@@ -84,19 +84,21 @@ public interface SiteUserMapper {
     @Select("""
               <script>
                 SELECT
-                  count(*)
+                  id AS site_user_id,
+                  school_id,
+                  authority,
+                  password
                 FROM
                   site_users
                 WHERE
                   login_id = #{loginId}
-                  AND password = #{password}
                   AND delete_flg = 'FLAG_OFF'
                   <if test="updateSiteUserId != null">
                     AND id != #{updateSiteUserId}
                   </if>
                 </script>
             """)
-    int checkDuplicateCertification(String loginId, String password, Integer updateSiteUserId);
+    SiteUserDetail checkDuplicateLoginId(String loginId, Integer updateSiteUserId);
 
     @Select("""
               SELECT

@@ -12,9 +12,6 @@ public class SiteUserUpdateRequest {
     @NotNull
     private Integer updateSiteUserId;
 
-    @NotNull
-    private Integer loginSiteUserId;
-
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9 ]*$")
     @Size(max = 30)
@@ -31,4 +28,7 @@ public class SiteUserUpdateRequest {
 
     @NotNull
     private Integer schoolId;
+
+    @NotNull
+    private Integer siteUserId;
 }

@@ -1,16 +1,16 @@
 package changeSeat.Response;
 
 import changeSeat.Enum.EnumAuthority;
-import changeSeat.Model.LoginUser;
+import changeSeat.Model.SiteUser.SiteUserDetail;
 import lombok.Data;
 
 @Data
 public class LoginResponse {
 
-    public LoginResponse(LoginUser loginUser) {
-        setSiteUserId(loginUser.getSiteUserId());
-        setSchoolId(loginUser.getSchoolId());
-        setAuthority(loginUser.getAuthority());
+    public LoginResponse(SiteUserDetail userDetail) {
+        setSiteUserId(userDetail.getId());
+        setSchoolId(userDetail.getSchoolId());
+        setAuthority(userDetail.getAuthority());
     }
 
     private Integer siteUserId;

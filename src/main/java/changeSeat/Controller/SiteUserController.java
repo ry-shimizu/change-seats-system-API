@@ -51,7 +51,7 @@ public class SiteUserController {
 
     @PutMapping("/delete")
     public ResponseEntity<Void> deleteSiteUser(@RequestBody @Validated SiteUserDeleteRequest request) {
-        siteUserService.deleteSiteUser(request.getId(), LocalDateTime.now());
+        siteUserService.deleteSiteUser(request.getSiteUserId(), request.getId(), LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 }
