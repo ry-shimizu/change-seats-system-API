@@ -84,7 +84,7 @@ public interface SiteUserMapper {
     @Select("""
               <script>
                 SELECT
-                  id AS site_user_id,
+                  id,
                   school_id,
                   authority,
                   password

@@ -151,7 +151,7 @@ public interface OtherClassMapper {
             FROM
               other_classes
             WHERE
-              id = #{classId}
+              class_id = #{classId}
               AND site_user_id = #{siteUserId}
               AND delete_flg = 'FLAG_OFF'
             """)

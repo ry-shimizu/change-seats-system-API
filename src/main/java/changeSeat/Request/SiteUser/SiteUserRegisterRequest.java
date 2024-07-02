@@ -14,7 +14,7 @@ public class SiteUserRegisterRequest {
     private Integer siteUserId;
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9 ]*$")
+    @Pattern(regexp = "^[a-zA-Z0-9-_]*$")
     @Size(max = 30)
     private String loginId;
 
@@ -28,5 +28,7 @@ public class SiteUserRegisterRequest {
     @Size(max = 40)
     private String userName;
 
+    @Size(min = 10)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9-_]*$")
     private String password;
 }

@@ -18,7 +18,6 @@ public class LoginService {
 
 
     public SiteUserDetail login(String loginId, String password) {
-        var a = passwordEncoder.encode(password);
         var user = Optional.ofNullable(siteUserMapper.checkDuplicateLoginId(loginId, null))
                 .orElseThrow(() -> {
                     throw new UnauthorizedException("ログインId、もしくはパスワードに誤りがあります。");

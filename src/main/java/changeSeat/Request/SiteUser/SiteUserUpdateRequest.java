@@ -24,6 +24,7 @@ public class SiteUserUpdateRequest {
     @Size(max = 40)
     private String userName;
 
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9-_]*$")
     private String password;
 
     @NotNull

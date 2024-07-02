@@ -63,7 +63,7 @@ public class OtherClassService {
         if (otherClassDetailList.size() == 0) {
             throw new NotFoundException(String.format("classId：%d、schoolId:%dのクラスは存在しません。", classId, schoolId));
         }
-
+        var a = otherClassMapper.checkMyOtherClass(classId, siteUserId);
         return OtherClassDetailDto.builder()
                 .isMyOtherClass(otherClassMapper.checkMyOtherClass(classId, siteUserId))
                 .otherClassDetails(otherClassDetailList).build();
