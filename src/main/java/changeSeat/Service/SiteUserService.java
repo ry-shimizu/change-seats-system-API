@@ -2,6 +2,7 @@ package changeSeat.Service;
 
 import changeSeat.Enum.EnumAuthority;
 import changeSeat.Error.Exception.InvalidInputException;
+import changeSeat.Error.Exception.NotFoundException;
 import changeSeat.Mapper.SiteUserMapper;
 import changeSeat.Model.SiteUser.SiteUserDetail;
 import changeSeat.Model.SiteUser.SiteUserRegister;
@@ -56,7 +57,7 @@ public class SiteUserService {
                             .userName(request.getUserName())
                             .authority(request.getAuthority())
                             .password(passwordEncoder.encode(request.getPassword()))
-                            .schoolId(request.getSchoolId())
+                            .schoolId(request.getRegisterSchoolId())
                             .createdBy(request.getSiteUserId())
                             .createdDt(now)
                             .updatedBy(request.getSiteUserId())
@@ -71,7 +72,7 @@ public class SiteUserService {
     public SiteUserDetail getSiteUserDetail(int id) {
         var siteUserDetail = siteUserMapper.getSiteUserDetail(id);
         if (isNull(siteUserDetail)) {
-            throw new InvalidInputException("ユーザーが存在しません。");
+            throw new NotFoundException(String.format("siteUserId：%dのユーザーは存在しません。", id));
         }
         return siteUserDetail;
     }
@@ -82,6 +83,10 @@ public class SiteUserService {
         if (!Objects.isNull(siteUserMapper.checkDuplicateLoginId(request.getLoginId(), request.getUpdateSiteUserId()))) {
             throw new InvalidInputException("入力されたログインIDはすでに利用されています。");
         }
+        var siteUserDetail = siteUserMapper.getSiteUserDetail(request.getUpdateSiteUserId());
+        if (isNull(siteUserDetail)) {
+            throw new NotFoundException(String.format("siteUserId：%dのユーザーは存在しません。", request.getUpdateSiteUserId()));
+        }
 
         siteUserMapper.update(SiteUserUpdate.builder()
                 .updateSiteUserId(request.getUpdateSiteUserId())
@@ -89,7 +94,7 @@ public class SiteUserService {
                 .userName(request.getUserName())
                 .authority(request.getAuthority())
                 .password(request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : null)
-                .schoolId(request.getSchoolId())
+                .schoolId(request.getRegisterSchoolId())
                 .updatedBy(request.getSiteUserId())
                 .updatedDt(now)
                 .build());

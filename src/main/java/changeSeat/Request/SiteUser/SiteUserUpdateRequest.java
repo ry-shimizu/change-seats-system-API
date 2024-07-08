@@ -13,7 +13,7 @@ public class SiteUserUpdateRequest {
     private Integer updateSiteUserId;
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9 ]*$")
+    @Pattern(regexp = "^[a-zA-Z0-9-]*$")
     @Size(max = 30)
     private String loginId;
 
@@ -24,11 +24,12 @@ public class SiteUserUpdateRequest {
     @Size(max = 40)
     private String userName;
 
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9-_]*$")
+    @Size(min = 10, max = 255)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9]*$")
     private String password;
 
     @NotNull
-    private Integer schoolId;
+    private Integer registerSchoolId;
 
     @NotNull
     private Integer siteUserId;

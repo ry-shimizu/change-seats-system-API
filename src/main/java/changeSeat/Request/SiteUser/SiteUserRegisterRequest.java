@@ -14,7 +14,7 @@ public class SiteUserRegisterRequest {
     private Integer siteUserId;
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9-_]*$")
+    @Pattern(regexp = "^[a-zA-Z0-9-]*$")
     @Size(max = 30)
     private String loginId;
 
@@ -22,13 +22,13 @@ public class SiteUserRegisterRequest {
     private EnumAuthority authority;
 
     @NotNull
-    private Integer schoolId;
+    private Integer registerSchoolId;
 
     @NotBlank
     @Size(max = 40)
     private String userName;
 
-    @Size(min = 10)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9-_]*$")
+    @Size(min = 10, max = 255)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9]*$")
     private String password;
 }
