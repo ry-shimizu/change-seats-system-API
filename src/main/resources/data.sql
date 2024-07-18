@@ -8,7 +8,7 @@ INSERT INTO SITE_USERS(id, login_id, user_name, authority, password, school_id, 
 INSERT INTO SITE_USERS(id, login_id, user_name, authority, password, school_id, delete_flg, created_by, created_dt, updated_by, updated_dt) VALUES(NEXT VALUE FOR "SITE_USER_SEQ", 'ry-shimizu4', 'shimizu4', 3, '$2a$10$tCCOZlpxPtS2327Z3/AuJOLB588bHPpO8OFfcsbNpuYuQXEdiYWeC', 1, 'FLAG_OFF', 0, now(), 0, now());
 
 INSERT INTO CLASSES(id, class_name, title, class_year, seat_start_point, site_user_id, school_id, delete_flg, created_by, created_dt, updated_by, updated_dt) VALUES(NEXT VALUE FOR "CLASS_SEQ", '3-1', 'My class1', 2023, 1, 1, 1, 'FLAG_OFF', 0, now(), 0, now());
-INSERT INTO CLASSES(id, class_name, title, class_year, seat_start_point, site_user_id, school_id, delete_flg, created_by, created_dt, updated_by, updated_dt) VALUES(NEXT VALUE FOR "CLASS_SEQ", '5-2', 'class2', 2024, 2, 2, 1, 'FLAG_OFF', 0, now(), 0, now());
+INSERT INTO CLASSES(id, class_name, title, class_year, seat_start_point, site_user_id, school_id, delete_flg, created_by, created_dt, updated_by, updated_dt) VALUES(NEXT VALUE FOR "CLASS_SEQ", '5-2', 'class2', 2024, 2, 2, 0, 'FLAG_OFF', 0, now(), 0, now());
 INSERT INTO CLASSES(id, class_name, title, class_year, seat_start_point, site_user_id, school_id, delete_flg, created_by, created_dt, updated_by, updated_dt) VALUES(NEXT VALUE FOR "CLASS_SEQ", '5-3', 'class3', 2024, 2, 3, 2, 'FLAG_OFF', 0, now(), 0, now());
 
 INSERT INTO SEATS(id, seat_number, class_id, empty_seat_flg, delete_flg, created_by, created_dt, updated_by, updated_dt) VALUES(NEXT VALUE FOR "SEAT_SEQ", 11, 1, 'FLAG_OFF', 'FLAG_OFF', 0, now(), 0, now());

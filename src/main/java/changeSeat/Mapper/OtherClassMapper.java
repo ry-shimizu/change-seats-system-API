@@ -58,7 +58,7 @@ public interface OtherClassMapper {
               ON c.id = s.class_id
               AND s.delete_flg = 'FLAG_OFF'
               AND s.empty_seat_flg = 'FLAG_OFF'
-              <if test="schoolId != null">
+              <if test="schoolId != 0">
                 AND c.school_id = #{schoolId}
               </if>
               WHERE
@@ -118,26 +118,8 @@ public interface OtherClassMapper {
     void updateDeleteFlg(int classId, int siteUserId, LocalDateTime now);
 
     @Select("""
-            SELECT
-              c.class_name,
-              c.title,
-              s.seat_number,
-              s.empty_seat_flg,
-              stu.student_name,
-              stu.sex_type
-            FROM
-              classes c
-            INNER JOIN seats s
-            ON c.id = s.class_id
-            AND s.delete_flg = 'FLAG_OFF'
-            INNER JOIN students stu
-            ON s.id = stu.seat_id
-            AND stu.delete_flg = 'FLAG_OFF'
-            WHERE
-              c.id = #{classId}
-              AND c.school_id = #{schoolId}
-              AND c.delete_flg = 'FLAG_OFF'
-            ORDER BY s.seat_number
+            <script>  SELECT    c.class_name,    c.title,    s.seat_number,    s.empty_seat_flg,    stu.student_name,    stu.sex_type  FROM    classes c  INNER JOIN seats s  ON c.id = s.class_id  AND s.delete_flg = 'FLAG_OFF'  INNER JOIN students stu  ON s.id = stu.seat_id  AND stu.delete_flg = 'FLAG_OFF'  WHERE    c.id = #{classId}    <if test="schoolId != 0">      AND c.school_id = #{schoolId}    </if>    AND c.delete_flg = 'FLAG_OFF'  ORDER BY s.seat_number
+            </script>
             """)
     List<OtherClassDetail> getOtherClassDetail(int classId, int schoolId);
 

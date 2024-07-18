@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS SEATS(
 
 CREATE TABLE IF NOT EXISTS STUDENTS(
     id INT NOT NULL PRIMARY KEY,
-    student_name VARCHAR(10),
+    student_name VARCHAR(6),
     sex_type SEXTYPE NOT NULL,
     seat_id INT NOT NULL,
 	delete_flg FLAGTYPE NOT NULL,
